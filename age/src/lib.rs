@@ -144,9 +144,9 @@ pub use age_core::secrecy;
 mod error;
 mod format;
 mod identity;
-mod keys;
+pub mod keys;
 mod primitives;
-mod protocol;
+pub mod protocol;
 mod util;
 
 pub use error::{DecryptError, EncryptError};
