@@ -16,14 +16,14 @@ use sha2::{Digest, Sha256};
 
 use crate::error::DecryptError;
 
-pub(crate) mod identity;
-pub(crate) mod recipient;
+pub mod identity;
+pub mod recipient;
 
 pub use identity::{Identity, UnsupportedKey};
 pub use recipient::{ParseRecipientKeyError, Recipient};
 
-pub(crate) const SSH_RSA_KEY_PREFIX: &str = "ssh-rsa";
-pub(crate) const SSH_ED25519_KEY_PREFIX: &str = "ssh-ed25519";
+pub const SSH_RSA_KEY_PREFIX: &str = "ssh-rsa";
+pub const SSH_ED25519_KEY_PREFIX: &str = "ssh-ed25519";
 
 pub(super) const SSH_RSA_RECIPIENT_TAG: &str = "ssh-rsa";
 const SSH_RSA_OAEP_LABEL: &str = "age-encryption.org/v1/ssh-rsa";
@@ -215,7 +215,7 @@ mod read_ssh {
     };
 
     /// The SSH `string` [data type](https://tools.ietf.org/html/rfc4251#section-5).
-    pub(crate) fn string(input: &[u8]) -> IResult<&[u8], &[u8]> {
+    pub fn string(input: &[u8]) -> IResult<&[u8], &[u8]> {
         length_data(be_u32)(input)
     }
 

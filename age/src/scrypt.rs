@@ -83,8 +83,8 @@ fn target_scrypt_work_factor() -> u8 {
         })
 }
 
-pub(crate) struct Recipient {
-    pub(crate) passphrase: SecretString,
+pub struct Recipient {
+    pub passphrase: SecretString,
 }
 
 impl crate::Recipient for Recipient {
@@ -112,9 +112,9 @@ impl crate::Recipient for Recipient {
     }
 }
 
-pub(crate) struct Identity<'a> {
-    pub(crate) passphrase: &'a SecretString,
-    pub(crate) max_work_factor: Option<u8>,
+pub struct Identity<'a> {
+    pub passphrase: &'a SecretString,
+    pub max_work_factor: Option<u8>,
 }
 
 impl<'a> crate::Identity for Identity<'a> {

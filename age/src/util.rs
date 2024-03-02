@@ -1,11 +1,11 @@
 use bech32::{FromBase32, Variant};
 
 #[cfg(all(any(feature = "armor", feature = "cli-common"), windows))]
-pub(crate) const LINE_ENDING: &str = "\r\n";
+pub const LINE_ENDING: &str = "\r\n";
 #[cfg(all(any(feature = "armor", feature = "cli-common"), not(windows)))]
-pub(crate) const LINE_ENDING: &str = "\n";
+pub const LINE_ENDING: &str = "\n";
 
-pub(crate) fn parse_bech32(s: &str) -> Option<(String, Vec<u8>)> {
+pub fn parse_bech32(s: &str) -> Option<(String, Vec<u8>)> {
     bech32::decode(s).ok().and_then(|(hrp, data, variant)| {
         if let Variant::Bech32 = variant {
             Vec::from_base32(&data).ok().map(|d| (hrp, d))
@@ -15,7 +15,7 @@ pub(crate) fn parse_bech32(s: &str) -> Option<(String, Vec<u8>)> {
     })
 }
 
-pub(crate) mod read {
+pub mod read {
     use std::str::FromStr;
 
     use base64::{prelude::BASE64_STANDARD_NO_PAD, Engine};
@@ -31,7 +31,7 @@ pub(crate) mod read {
 
     #[cfg(feature = "ssh")]
     #[cfg_attr(docsrs, doc(cfg(feature = "ssh")))]
-    pub(crate) fn encoded_str(
+    pub fn encoded_str(
         count: usize,
         engine: impl base64::Engine,
     ) -> impl Fn(&str) -> IResult<&str, Vec<u8>> {
@@ -51,7 +51,7 @@ pub(crate) mod read {
 
     #[cfg(feature = "ssh")]
     #[cfg_attr(docsrs, doc(cfg(feature = "ssh")))]
-    pub(crate) fn str_while_encoded(
+    pub fn str_while_encoded(
         engine: impl base64::Engine,
     ) -> impl Fn(&str) -> IResult<&str, Vec<u8>> {
         use nom::bytes::complete::take_while1;
@@ -71,7 +71,7 @@ pub(crate) mod read {
 
     #[cfg(feature = "ssh")]
     #[cfg_attr(docsrs, doc(cfg(feature = "ssh")))]
-    pub(crate) fn wrapped_str_while_encoded(
+    pub fn wrapped_str_while_encoded(
         engine: impl Engine,
     ) -> impl Fn(&str) -> IResult<&str, Vec<u8>> {
         use nom::{bytes::streaming::take_while1, character::streaming::line_ending};
@@ -95,7 +95,7 @@ pub(crate) mod read {
         }
     }
 
-    pub(crate) fn base64_arg<A: AsRef<[u8]>, const N: usize, const B: usize>(
+    pub fn base64_arg<A: AsRef<[u8]>, const N: usize, const B: usize>(
         arg: &A,
     ) -> Option<[u8; N]> {
         if N > B {
@@ -110,19 +110,19 @@ pub(crate) mod read {
     }
 
     /// Parses a decimal number composed only of digits with no leading zeros.
-    pub(crate) fn decimal_digit_arg<T: FromStr>(arg: &str) -> Option<T> {
+    pub fn decimal_digit_arg<T: FromStr>(arg: &str) -> Option<T> {
         verify::<_, _, _, (), _, _>(digit1, |n: &str| !n.starts_with('0'))(arg)
             .ok()
             .and_then(|(_, n)| n.parse_to())
     }
 }
 
-pub(crate) mod write {
+pub mod write {
     use base64::{prelude::BASE64_STANDARD_NO_PAD, Engine};
     use cookie_factory::{combinator::string, SerializeFn};
     use std::io::Write;
 
-    pub(crate) fn encoded_data<W: Write>(data: &[u8]) -> impl SerializeFn<W> {
+    pub fn encoded_data<W: Write>(data: &[u8]) -> impl SerializeFn<W> {
         let encoded = BASE64_STANDARD_NO_PAD.encode(data);
         string(encoded)
     }

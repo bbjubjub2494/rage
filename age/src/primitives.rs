@@ -15,32 +15,32 @@ pub mod armor;
 
 pub mod stream;
 
-pub(crate) struct HmacKey(pub(crate) Secret<[u8; 32]>);
+pub struct HmacKey(pub Secret<[u8; 32]>);
 
 /// `HMAC[key](message)`
 ///
 /// HMAC from [RFC 2104] with SHA-256.
 ///
 /// [RFC 2104]: https://tools.ietf.org/html/rfc2104
-pub(crate) struct HmacWriter {
+pub struct HmacWriter {
     inner: Hmac<Sha256>,
 }
 
 impl HmacWriter {
     /// Constructs a new writer to process input data.
-    pub(crate) fn new(key: HmacKey) -> Self {
+    pub fn new(key: HmacKey) -> Self {
         HmacWriter {
             inner: Hmac::new_from_slice(key.0.expose_secret()).expect("key is the correct length"),
         }
     }
 
     /// Checks if `mac` is correct for the processed input.
-    pub(crate) fn finalize(self) -> CtOutput<Hmac<Sha256>> {
+    pub fn finalize(self) -> CtOutput<Hmac<Sha256>> {
         self.inner.finalize()
     }
 
     /// Checks if `mac` is correct for the processed input.
-    pub(crate) fn verify(self, mac: &[u8]) -> Result<(), MacError> {
+    pub fn verify(self, mac: &[u8]) -> Result<(), MacError> {
         self.inner.verify_slice(mac)
     }
 }
@@ -61,7 +61,7 @@ impl Write for HmacWriter {
 /// scrypt from [RFC 7914] with r = 8 and P = 1. N must be a power of 2.
 ///
 /// [RFC 7914]: https://tools.ietf.org/html/rfc7914
-pub(crate) fn scrypt(salt: &[u8], log_n: u8, password: &str) -> Result<[u8; 32], InvalidParams> {
+pub fn scrypt(salt: &[u8], log_n: u8, password: &str) -> Result<[u8; 32], InvalidParams> {
     let params = ScryptParams::new(log_n, 8, 1, 32)?;
 
     let mut output = [0; 32];

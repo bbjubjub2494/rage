@@ -86,7 +86,7 @@ impl InputReader {
         matches!(self, Self::Stdin(_)) && io::stdin().is_terminal()
     }
 
-    pub(crate) fn filename(&self) -> Option<&str> {
+    pub fn filename(&self) -> Option<&str> {
         if let Self::File(f) = self {
             Some(&f.filename)
         } else {
@@ -415,7 +415,7 @@ impl Write for OutputWriter {
 }
 
 #[cfg(test)]
-pub(crate) mod tests {
+pub mod tests {
     #[cfg(unix)]
     use super::{OutputFormat, OutputWriter};
     #[cfg(unix)]

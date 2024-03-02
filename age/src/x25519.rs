@@ -229,7 +229,7 @@ impl crate::Recipient for Recipient {
 }
 
 #[cfg(test)]
-pub(crate) mod tests {
+pub mod tests {
     use age_core::secrecy::ExposeSecret;
     use proptest::prelude::*;
     use x25519_dalek::{PublicKey, StaticSecret};
@@ -237,9 +237,9 @@ pub(crate) mod tests {
     use super::{Identity, Recipient};
     use crate::{Identity as _, Recipient as _};
 
-    pub(crate) const TEST_SK: &str =
+    pub const TEST_SK: &str =
         "AGE-SECRET-KEY-1GQ9778VQXMMJVE8SK7J6VT8UJ4HDQAJUVSFCWCM02D8GEWQ72PVQ2Y5J33";
-    pub(crate) const TEST_PK: &str =
+    pub const TEST_PK: &str =
         "age1t7rxyev2z3rw82stdlrrepyc39nvn86l5078zqkf5uasdy86jp6svpy7pa";
 
     #[test]

@@ -22,7 +22,7 @@ pub enum IdentityFileEntry {
 
 impl IdentityFileEntry {
     #[allow(unused_variables)]
-    pub(crate) fn into_identity(
+    pub fn into_identity(
         self,
         callbacks: impl Callbacks,
     ) -> Result<Box<dyn crate::Identity>, DecryptError> {
@@ -38,7 +38,7 @@ impl IdentityFileEntry {
     }
 
     #[allow(unused_variables)]
-    pub(crate) fn to_recipient(
+    pub fn to_recipient(
         &self,
         callbacks: impl Callbacks,
     ) -> Result<Box<dyn crate::Recipient + Send>, EncryptError> {
@@ -139,13 +139,13 @@ impl IdentityFile {
 }
 
 #[cfg(test)]
-pub(crate) mod tests {
+pub mod tests {
     use age_core::secrecy::ExposeSecret;
     use std::io::BufReader;
 
     use super::{IdentityFile, IdentityFileEntry};
 
-    pub(crate) const TEST_SK: &str =
+    pub const TEST_SK: &str =
         "AGE-SECRET-KEY-1GQ9778VQXMMJVE8SK7J6VT8UJ4HDQAJUVSFCWCM02D8GEWQ72PVQ2Y5J33";
 
     fn valid_secret_key_encoding(keydata: &str, num_keys: usize) {

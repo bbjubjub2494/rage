@@ -17,13 +17,13 @@ use crate::{
 const HEADER_KEY_LABEL: &[u8] = b"header";
 const PAYLOAD_KEY_LABEL: &[u8] = b"payload";
 
-pub(crate) fn new_file_key() -> FileKey {
+pub fn new_file_key() -> FileKey {
     let mut file_key = [0; 16];
     OsRng.fill_bytes(&mut file_key);
     file_key.into()
 }
 
-pub(crate) fn mac_key(file_key: &FileKey) -> HmacKey {
+pub fn mac_key(file_key: &FileKey) -> HmacKey {
     HmacKey(Secret::new(hkdf(
         &[],
         HEADER_KEY_LABEL,
@@ -31,7 +31,7 @@ pub(crate) fn mac_key(file_key: &FileKey) -> HmacKey {
     )))
 }
 
-pub(crate) fn v1_payload_key(
+pub fn v1_payload_key(
     file_key: &FileKey,
     header: &HeaderV1,
     nonce: &Nonce,

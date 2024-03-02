@@ -58,7 +58,7 @@ struct EncodedBytes {
 }
 
 #[pin_project(project = LineEndingWriterProj)]
-pub(crate) struct LineEndingWriter<W> {
+pub struct LineEndingWriter<W> {
     #[pin]
     inner: W,
     buf: Vec<u8>,
@@ -740,7 +740,7 @@ impl<R: Read> ArmoredReader<BufReader<R>> {
 #[cfg(feature = "cli-common")]
 impl<R: BufRead> ArmoredReader<R> {
     /// Wraps a buffered reader that may contain an armored age file.
-    pub(crate) fn new_buffered(reader: R) -> Self {
+    pub fn new_buffered(reader: R) -> Self {
         ArmoredReader::with_buffered(reader)
     }
 }

@@ -11,7 +11,7 @@ use rust_embed::RustEmbed;
 struct Localizations;
 
 lazy_static! {
-    pub(crate) static ref LANGUAGE_LOADER: FluentLanguageLoader = {
+    pub static ref LANGUAGE_LOADER: FluentLanguageLoader = {
         let language_loader = fluent_language_loader!();
         // Ensure that the fallback language is always loaded, even if the library user
         // doesn't call `localizer().select(languages)`.

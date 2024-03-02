@@ -17,7 +17,7 @@ use futures::io::{AsyncBufRead, AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteE
 
 pub mod decryptor;
 
-pub(crate) struct Nonce([u8; 16]);
+pub struct Nonce([u8; 16]);
 
 impl AsRef<[u8]> for Nonce {
     fn as_ref(&self) -> &[u8] {

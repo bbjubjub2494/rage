@@ -19,9 +19,9 @@ const MAC_TAG: &[u8] = b"---";
 const ENCODED_MAC_LENGTH: usize = 43;
 
 #[derive(Debug, PartialEq)]
-pub(crate) struct HeaderV1 {
-    pub(crate) recipients: Vec<Stanza>,
-    pub(crate) mac: [u8; 32],
+pub struct HeaderV1 {
+    pub recipients: Vec<Stanza>,
+    pub mac: [u8; 32],
     /// The serialized bytes of this header. Set if we parsed this header from a reader,
     /// to handle the possibility that the header is not round-trip canonical, such as it
     /// containing a legacy stanza with a body of length 0 mod 64.
@@ -32,7 +32,7 @@ pub(crate) struct HeaderV1 {
 }
 
 impl HeaderV1 {
-    pub(crate) fn new(recipients: Vec<Stanza>, mac_key: HmacKey) -> Self {
+    pub fn new(recipients: Vec<Stanza>, mac_key: HmacKey) -> Self {
         let mut header = HeaderV1 {
             recipients,
             mac: [0; 32],
@@ -49,7 +49,7 @@ impl HeaderV1 {
         header
     }
 
-    pub(crate) fn verify_mac(&self, mac_key: HmacKey) -> Result<(), hmac::digest::MacError> {
+    pub fn verify_mac(&self, mac_key: HmacKey) -> Result<(), hmac::digest::MacError> {
         let mut mac = HmacWriter::new(mac_key);
         if let Some(bytes) = &self.encoded_bytes {
             // The MAC covers all bytes up to the end of the --- prefix.
@@ -64,7 +64,7 @@ impl HeaderV1 {
 }
 
 impl Header {
-    pub(crate) fn read<R: Read>(mut input: R) -> Result<Self, DecryptError> {
+    pub fn read<R: Read>(mut input: R) -> Result<Self, DecryptError> {
         let mut data = vec![];
         loop {
             match read::header(&data) {
@@ -90,7 +90,7 @@ impl Header {
         }
     }
 
-    pub(crate) fn read_buffered<R: BufRead>(mut input: R) -> Result<Self, DecryptError> {
+    pub fn read_buffered<R: BufRead>(mut input: R) -> Result<Self, DecryptError> {
         let mut data = vec![];
         loop {
             match read::header(&data) {
@@ -120,7 +120,7 @@ impl Header {
 
     #[cfg(feature = "async")]
     #[cfg_attr(docsrs, doc(cfg(feature = "async")))]
-    pub(crate) async fn read_async<R: AsyncRead + Unpin>(
+    pub async fn read_async<R: AsyncRead + Unpin>(
         mut input: R,
     ) -> Result<Self, DecryptError> {
         let mut data = vec![];
@@ -150,7 +150,7 @@ impl Header {
 
     #[cfg(feature = "async")]
     #[cfg_attr(docsrs, doc(cfg(feature = "async")))]
-    pub(crate) async fn read_async_buffered<R: AsyncBufRead + Unpin>(
+    pub async fn read_async_buffered<R: AsyncBufRead + Unpin>(
         mut input: R,
     ) -> Result<Self, DecryptError> {
         let mut data = vec![];
@@ -180,7 +180,7 @@ impl Header {
         }
     }
 
-    pub(crate) fn write<W: Write>(&self, mut output: W) -> io::Result<()> {
+    pub fn write<W: Write>(&self, mut output: W) -> io::Result<()> {
         cookie_factory::gen(write::header(self), &mut output)
             .map(|_| ())
             .map_err(|e| {
@@ -193,7 +193,7 @@ impl Header {
 
     #[cfg(feature = "async")]
     #[cfg_attr(docsrs, doc(cfg(feature = "async")))]
-    pub(crate) async fn write_async<W: AsyncWrite + Unpin>(&self, mut output: W) -> io::Result<()> {
+    pub async fn write_async<W: AsyncWrite + Unpin>(&self, mut output: W) -> io::Result<()> {
         let mut buf = vec![];
         cookie_factory::gen(write::header(self), &mut buf)
             .map(|_| ())
@@ -209,7 +209,7 @@ impl Header {
 }
 
 #[derive(Debug, PartialEq)]
-pub(crate) enum Header {
+pub enum Header {
     V1(HeaderV1),
     Unknown(String),
 }

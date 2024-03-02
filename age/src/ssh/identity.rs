@@ -45,7 +45,7 @@ impl UnencryptedKey {
     /// - `Some(Ok(file_key))` on success.
     /// - `Some(Err(e))` if a decryption error occurs.
     /// - `None` if the [`Stanza`] does not match this key.
-    pub(crate) fn unwrap_stanza(&self, stanza: &Stanza) -> Option<Result<FileKey, DecryptError>> {
+    pub fn unwrap_stanza(&self, stanza: &Stanza) -> Option<Result<FileKey, DecryptError>> {
         match (self, stanza.tag.as_str()) {
             (UnencryptedKey::SshRsa(ssh_key, sk), SSH_RSA_RECIPIENT_TAG) => {
                 let tag = base64_arg::<_, TAG_LEN_BYTES, 6>(stanza.args.get(0)?)?;
@@ -143,7 +143,7 @@ pub enum UnsupportedKey {
 }
 
 impl UnsupportedKey {
-    pub(crate) fn from_key_type(key_type: String) -> Self {
+    pub fn from_key_type(key_type: String) -> Self {
         if key_type.starts_with("sk-ssh-") {
             Self::Hardware(key_type)
         } else {
@@ -348,12 +348,12 @@ fn openssh_privkey(input: &str) -> IResult<&str, Identity> {
     )(input)
 }
 
-pub(crate) fn ssh_identity(input: &str) -> IResult<&str, Identity> {
+pub fn ssh_identity(input: &str) -> IResult<&str, Identity> {
     alt((rsa_privkey, openssh_privkey))(input)
 }
 
 #[cfg(test)]
-pub(crate) mod tests {
+pub mod tests {
     use age_core::secrecy::{ExposeSecret, SecretString};
     use std::io::BufReader;
 
@@ -366,7 +366,7 @@ pub(crate) mod tests {
         Callbacks, Identity as _, Recipient as _,
     };
 
-    pub(crate) const TEST_SSH_RSA_SK: &str = "-----BEGIN RSA PRIVATE KEY-----
+    pub const TEST_SSH_RSA_SK: &str = "-----BEGIN RSA PRIVATE KEY-----
 MIIEogIBAAKCAQEAxO5yF0xjbmkQTfbaCP8DQC7kHnPJr5bdIie6Nzmg9lL6Chye
 0vK5iJ+BYkA1Hnf1WnNzoVIm3otZPkwZptertkY95JYFmTiA4IvHeL1yiOTd2AYc
 a947EPpM9XPomeM/7U7c99OvuCuOl1YlTFsMsoPY/NiZ+NZjgMvb3XgyH0OXy3mh
@@ -462,9 +462,9 @@ k38nvmwdar9EY4Mb7LrSqR6oybE/g9Hjg6cxzVcvDQKga6tJVM5oY=
 -----END OPENSSH PRIVATE KEY-----",
         ),
     ];
-    pub(crate) const TEST_SSH_ED25519_SK: &str = TEST_SSH_ED25519_SK_LIST[0].1;
+    pub const TEST_SSH_ED25519_SK: &str = TEST_SSH_ED25519_SK_LIST[0].1;
 
-    pub(crate) const TEST_SSH_ECDSA_SK: &str = "-----BEGIN OPENSSH PRIVATE KEY-----
+    pub const TEST_SSH_ECDSA_SK: &str = "-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNlY2RzYS
 1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQQQ0odKVFtwOmuCl6RXfwzExGs9dP9a
 V9H5xAfETILMd7sLFgqyOxz1FA84EZV0vKdW5c0HPB7/JxQw0vFmNSWeAAAAqGOGFFJjhh

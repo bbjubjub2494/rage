@@ -41,7 +41,7 @@ pub enum Recipient {
     SshEd25519(Vec<u8>, EdwardsPoint),
 }
 
-pub(crate) enum ParsedRecipient {
+pub enum ParsedRecipient {
     Supported(Recipient),
     RsaModulusTooLarge,
     RsaModulusTooSmall,
@@ -252,7 +252,7 @@ fn ssh_ignore_pubkey(input: &str) -> IResult<&str, ParsedRecipient> {
     )(input)
 }
 
-pub(crate) fn ssh_recipient(max_size: usize) -> impl Fn(&str) -> IResult<&str, ParsedRecipient> {
+pub fn ssh_recipient(max_size: usize) -> impl Fn(&str) -> IResult<&str, ParsedRecipient> {
     move |input| {
         alt((
             ssh_rsa_pubkey(max_size),
@@ -263,11 +263,11 @@ pub(crate) fn ssh_recipient(max_size: usize) -> impl Fn(&str) -> IResult<&str, P
 }
 
 #[cfg(test)]
-pub(crate) mod tests {
+pub mod tests {
     use super::{ParseRecipientKeyError, Recipient};
 
-    pub(crate) const TEST_SSH_RSA_PK: &str = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDE7nIXTGNuaRBN9toI/wNALuQec8mvlt0iJ7o3OaD2UvoKHJ7S8rmIn4FiQDUed/Vac3OhUibei1k+TBmm16u2Rj3klgWZOIDgi8d4vXKI5N3YBhxr3jsQ+kz1c+iZ4z/tTtz306+4K46XViVMWwyyg9j82Jn41mOAy9vdeDIfQ5fLeaGqn5KwlT61GNkZ+ozWK/ZNlQIlNCcoXxhJULIs9XrtczWyVBAea1nlDo0WHODePxoJjmsNHrpQXn5mf9O83xs10qfTUjnRUt48jRmedFy4tcra3QGmSTQ3KZne+wXXSb0cIpXLGvZjQSPHgG1hc4r3uBpiSzvesGLv79XL alice@rust";
-    pub(crate) const TEST_SSH_ED25519_PK: &str = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHsKLqeplhpW+uObz5dvMgjz1OxfM/XXUB+VHtZ6isGN alice@rust";
+    pub const TEST_SSH_RSA_PK: &str = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDE7nIXTGNuaRBN9toI/wNALuQec8mvlt0iJ7o3OaD2UvoKHJ7S8rmIn4FiQDUed/Vac3OhUibei1k+TBmm16u2Rj3klgWZOIDgi8d4vXKI5N3YBhxr3jsQ+kz1c+iZ4z/tTtz306+4K46XViVMWwyyg9j82Jn41mOAy9vdeDIfQ5fLeaGqn5KwlT61GNkZ+ozWK/ZNlQIlNCcoXxhJULIs9XrtczWyVBAea1nlDo0WHODePxoJjmsNHrpQXn5mf9O83xs10qfTUjnRUt48jRmedFy4tcra3QGmSTQ3KZne+wXXSb0cIpXLGvZjQSPHgG1hc4r3uBpiSzvesGLv79XL alice@rust";
+    pub const TEST_SSH_ED25519_PK: &str = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHsKLqeplhpW+uObz5dvMgjz1OxfM/XXUB+VHtZ6isGN alice@rust";
     const TEST_SSH_UNSUPPORTED_PK: &str = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHFliOyIZs1gxGF3fmDxFykQhE88wy6AKDGFBfn0R6ZuvRmENABZQa9+pj9hMki+LX0qDJbmHTiWDbYv/cmFt/Q=";
     const TEST_SSH_INVALID_PK: &str = "ecdsa-sha2-nistp256 AAAAC3NzaC1lZDI1NTE5AAAAIHsKLqeplhpW+uObz5dvMgjz1OxfM/XXUB+VHtZ6isGN alice@rust";
 
